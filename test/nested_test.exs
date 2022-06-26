@@ -19,11 +19,11 @@ defmodule NestedTest do
   end
 
 
-#  test "get_fails_test" do
-#    assert_raise FunctionClauseError, Nested.get(test_map(),[:unknown])
-#    assert_raise(:error, {:badkey, :unknown}, Nested.get(test_map(),[:three, :unknown]))
-#    assert_raise(:error, {:badmap, :target}, Nested.get(test_map(),[:three, :two, :one, :unknown]))
-#  end
+  test "get_fails_test" do
+    assert nil == Nested.get(test_map(),[:unknown])
+    assert nil == Nested.get(test_map(),[:three, :unknown])
+    assert_raise BadMapError, "expected a map, got: :target", fn -> Nested.get(test_map(),[:three, :two, :one, :unknown]) end
+  end
 
 
   test "get_with_default_test" do
@@ -37,9 +37,9 @@ defmodule NestedTest do
   end
 
 
-#  test "get_with_default_fails_test" do
-#    assert_raise(:error, {:badmap, :target}, :erlang.Nested.get([:three, :two, :one, :unknown], test_map(), :default))
-#  end
+  test "get_with_default_fails_test" do
+    assert_raise FunctionClauseError, "no function clause matching in Nested.get/3", fn -> Nested.get([:three, :two, :one, :unknown], test_map(), :default) end
+  end
 
 
   test "update_test" do
@@ -50,11 +50,11 @@ defmodule NestedTest do
   end
 
 
-#  test "update_fails_test" do
-#    assert_raise(:error, {:badkey, :unknown}, Nested.update([:unknown], 1, test_map()))
-#    assert_raise(:error, {:badkey, :unknown}, Nested.update([:three, :unknown], 1, test_map()))
-#    assert_raise(:error, {:no_map, [:foo, :bar], []}, Nested.update([:foo, :bar, :buz], 1, %{foo: %{bar: []}}))
-#  end
+  test "update_fails_test" do
+    assert_raise ArgumentError, "argument error", fn -> Nested.update([:unknown], 1, test_map()) end   
+    assert_raise ArgumentError, "argument error", fn -> Nested.update([:three, :unknown], 1, test_map()) end
+    assert_raise ArgumentError, "argument error", fn -> Nested.update([:foo, :bar, :buz], 1, %{foo: %{bar: []}}) end
+  end
 
 
   test "put_test" do
@@ -75,9 +75,9 @@ defmodule NestedTest do
   end
 
 
-#  test "remove_fail_test" do
-#    assert_raise(:throw, {:bad_path, []}, Nested.remove([], test_map()))
-#  end
+  test "remove_fail_test" do
+    assert_raise FunctionClauseError, "no function clause matching in Nested.remove/2",fn -> Nested.remove([], test_map()) end
+  end
 
 
   test "keys_test" do
@@ -92,10 +92,10 @@ defmodule NestedTest do
   end
 
 
-#  test "append_fail_test" do
-#    testMap = %{outer: %{list: [1], hash: %{}}}
-#    assert_raise(:error, :no_list, Nested.append(testMap,[:outer, :hash], 2))
-#  end
+  test "append_fail_test" do
+    testMap = %{outer: %{list: [1], hash: %{}}}
+    assert_raise ErlangError, "Erlang error: :no_list", fn -> Nested.append(testMap,[:outer, :hash], 2) end
+  end
 
 
   def test_map do
