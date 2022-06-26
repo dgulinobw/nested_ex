@@ -18,14 +18,14 @@ defmodule Nested do
 
   """
 
-  def is_key(map, [key]) do
+  def has_key?(map, [key]) do
     Map.has_key?(map, key)
   end
 
-  def is_key(map,[key | pathRest]) do
+  def has_key?(map,[key | pathRest]) do
     case(map) do
       %{^key => subMap} ->
-        is_key(subMap, pathRest)
+        has_key?(subMap, pathRest)
       _ ->
         false
     end
@@ -54,10 +54,9 @@ defmodule Nested do
     value
   end
 
-
   def update(map, path, valueOrFun) do
     try do
-      updatef_internal(map, path, valueOrFun)
+      updatef_interal(map, path, valueOrFun)
     catch
       :error, {:error, {:no_map, pathRest, element}} ->
         pathLength = length(path) - length(pathRest)
@@ -67,19 +66,19 @@ defmodule Nested do
   end
 
 
-  defp updatef_internal(map, [key | pathRest], valueOrFun) when is_map(map) do
-    Map.put(map,key, updatef_internal(Map.get(map,key), pathRest, valueOrFun))
+  defp updatef_interal(map, [key | pathRest], valueOrFun) when is_map(map) do
+    Map.put(map,key, updatef_interal(Map.get(map,key), pathRest, valueOrFun))
   end
 
-  defp updatef_internal(oldValue, [], fun) when is_function(fun) do
+  defp updatef_interal(oldValue, [], fun) when is_function(fun) do
     fun.(oldValue)
   end
 
-  defp updatef_internal(_, [], value) do
+  defp updatef_interal(_, [], value) do
     value
   end
 
-  defp updatef_internal(element, path, _) do
+  defp updatef_interal(element, path, _) do
     :erlang.error({:error, {:no_map, path, element}})
   end
 
@@ -99,18 +98,18 @@ defmodule Nested do
   end
 
 
-  def remove(_, []) do
-    throw({:bad_path, []})
+  def delete(map, []) do
+    map
   end
 
-  def remove(map, [lastKey]) do
+  def delete(map, [lastKey]) do
     Map.delete(map,lastKey)
   end
 
-  def remove(map, [key | pathRest]) do
+  def delete(map, [key | pathRest]) do
     case(Map.has_key?(map,key)) do
       true ->
-        Map.put(map, key, remove(Map.get(map, key), pathRest))
+        Map.put(map, key, delete(Map.get(map, key), pathRest))
       false ->
         map
     end

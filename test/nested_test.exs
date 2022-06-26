@@ -2,11 +2,11 @@ defmodule NestedTest do
   use ExUnit.Case
   doctest Nested
 
-  test "Nested.is_key_test" do
-    assert false == Nested.is_key(%{}, [:fnord, :foo, :bar])
-    assert true == Nested.is_key(%{fnord: 23}, [:fnord])
-    assert true == Nested.is_key(test_map(), [:three, :two, :one])
-    assert false == Nested.is_key(test_map(), [:three, :two, :seven])
+  test "Nested.has_key?_test" do
+    assert false == Nested.has_key?(%{}, [:fnord, :foo, :bar])
+    assert true == Nested.has_key?(%{fnord: 23}, [:fnord])
+    assert true == Nested.has_key?(test_map(), [:three, :two, :one])
+    assert false == Nested.has_key?(test_map(), [:three, :two, :seven])
   end
 
 
@@ -67,16 +67,16 @@ defmodule NestedTest do
   end
 
 
-  test "remove_test" do
-    assert %{three: %{two_side: 2}, three_side: 3} == Nested.remove(test_map(), [:three, :two])
-    assert %{three: %{two: %{one_side: 1}, two_side: 2}, three_side: 3} == Nested.remove(test_map(),[:three, :two, :one])
-    assert test_map() == Nested.remove(test_map(),[:unknown, :path])
-    assert test_map() == Nested.remove(test_map(),[:three, :unknown_key])
+  test "delete_test" do
+    assert %{three: %{two_side: 2}, three_side: 3} == Nested.delete(test_map(), [:three, :two])
+    assert %{three: %{two: %{one_side: 1}, two_side: 2}, three_side: 3} == Nested.delete(test_map(),[:three, :two, :one])
+    assert test_map() == Nested.delete(test_map(),[:unknown, :path])
+    assert test_map() == Nested.delete(test_map(),[:three, :unknown_key])
   end
 
 
-  test "remove_fail_test" do
-    assert_raise FunctionClauseError, "no function clause matching in Nested.remove/2",fn -> Nested.remove([], test_map()) end
+  test "delete_fail_test" do
+    assert_raise FunctionClauseError, "no function clause matching in Nested.delete/2",fn -> Nested.delete([], test_map()) end
   end
 
 
