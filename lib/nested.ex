@@ -42,7 +42,7 @@ defmodule Nested do
 
 
   def get(map, [key | pathRest], default) do
-    case(:maps.get(key, map, {__MODULE__, default})) do
+    case(Map.get(map,key,{__MODULE__, default})) do
       {__MODULE__, ^default} ->
         default
       nestedMap ->
@@ -68,7 +68,7 @@ defmodule Nested do
 
 
   defp updatef_internal(map, [key | pathRest], valueOrFun) when is_map(map) do
-    :maps.update(key, updatef_internal(:maps.get(key,map), pathRest, valueOrFun),map)
+    Map.put(map,key, updatef_internal(Map.get(map,key), pathRest, valueOrFun))
   end
 
   defp updatef_internal(oldValue, [], fun) when is_function(fun) do
@@ -85,13 +85,13 @@ defmodule Nested do
 
 
   def put(map, [key | pathRest], value) do
-    subMap = case(:maps.is_key(key, map) and is_map(:maps.get(key, map))) do
+    subMap = case(Map.has_key?(map, key) and is_map(Map.get(map,key))) do
       true ->
-        :maps.get(key, map)
+        Map.get(map, key)
       false ->
         %{}
     end
-    :maps.put(key, put(subMap, pathRest, value), map )
+    Map.put(map, key, put(subMap, pathRest, value) )
   end
 
   def put(_, [], value) do
@@ -104,13 +104,13 @@ defmodule Nested do
   end
 
   def remove(map, [lastKey]) do
-    :maps.remove(lastKey, map)
+    Map.delete(map,lastKey)
   end
 
   def remove(map, [key | pathRest]) do
-    case(:maps.is_key(key, map)) do
+    case(Map.has_key?(map,key)) do
       true ->
-        :maps.put(key, remove(:maps.get(key, map), pathRest), map)
+        Map.put(map, key, remove(Map.get(map, key), pathRest))
       false ->
         map
     end
@@ -118,11 +118,11 @@ defmodule Nested do
 
 
   def keys(map, [key | pathRest]) do
-    keys(:maps.get(key, map), pathRest)
+    keys(Map.get(map,key), pathRest)
   end
 
   def keys(map, []) do
-    :maps.keys(map)
+    Map.keys(map)
   end
 
 

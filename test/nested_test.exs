@@ -19,10 +19,10 @@ defmodule NestedTest do
   end
 
 
-#  test get_fails_test() do
-#    assert_raise(:error, {:badkey, :unknown}, Nested.get([:unknown], test_map()))
-#    assert_raise(:error, {:badkey, :unknown}, :erlang.Nested.get([:three, :unknown], test_map()))
-#    assert_raise(:error, {:badmap, :target}, :erlang.Nested.get([:three, :two, :one, :unknown], test_map()))
+#  test "get_fails_test" do
+#    assert_raise FunctionClauseError, Nested.get(test_map(),[:unknown])
+#    assert_raise(:error, {:badkey, :unknown}, Nested.get(test_map(),[:three, :unknown]))
+#    assert_raise(:error, {:badmap, :target}, Nested.get(test_map(),[:three, :two, :one, :unknown]))
 #  end
 
 
