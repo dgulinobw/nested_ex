@@ -25,6 +25,21 @@ defmodule NestedTest do
     assert_raise BadMapError, "expected a map, got: :target", fn -> Nested.get(test_map(),[:three, :two, :one, :unknown]) end
   end
 
+  #TODO
+  test "fetch_test" do
+    #assert {:ok, test_map()} == Nested.fetch(test_map(), [])
+    assert {:ok, 3} == Nested.fetch(test_map(),[:three_side])
+    #assert {:ok, 2} == Nested.fetch(test_map(), [:three, :two_side])
+    #assert {:ok, %{one: :target, one_side: 1}} == Nested.fetch(test_map(), [:three, :two])
+    #assert {:ok, :target} == Nested.fetch(test_map(), [:three, :two, :one])
+  end
+
+
+  test "fetch_fails_test" do
+    assert :error == Nested.fetch(test_map(),[:unknown])
+    #assert :error == Nested.fetch(test_map(),[:three, :unknown])
+    assert_raise BadMapError, "expected a map, got: :target", fn -> Nested.get(test_map(),[:three, :two, :one, :unknown]) end
+  end
 
   test "get_with_default_test" do
     assert test_map() == Nested.get(test_map(), [], :default)
@@ -43,17 +58,17 @@ defmodule NestedTest do
 
 
   test "update_test" do
-    assert 3 == Nested.update(test_map(), [], 3)
-    assert %{three: 3, three_side: 3} == Nested.update(test_map(),[:three], 3)
-    assert %{three: %{two: 2, two_side: 2}, three_side: 3} == Nested.update(test_map(), [:three, :two], 2)
-    assert %{three: %{two: %{one: :target, one_side: 11}, two_side: 2}, three_side: 3} == Nested.update(test_map(),[:three, :two, :one_side], fn e -> e + 10 end)
+    assert 3 == Nested.update!(test_map(), [], 3)
+    assert %{three: 3, three_side: 3} == Nested.update!(test_map(),[:three], 3)
+    assert %{three: %{two: 2, two_side: 2}, three_side: 3} == Nested.update!(test_map(), [:three, :two], 2)
+    assert %{three: %{two: %{one: :target, one_side: 11}, two_side: 2}, three_side: 3} == Nested.update!(test_map(),[:three, :two, :one_side], fn e -> e + 10 end)
   end
 
 
   test "update_fails_test" do
-    assert_raise ArgumentError, "argument error", fn -> Nested.update([:unknown], 1, test_map()) end   
-    assert_raise ArgumentError, "argument error", fn -> Nested.update([:three, :unknown], 1, test_map()) end
-    assert_raise ArgumentError, "argument error", fn -> Nested.update([:foo, :bar, :buz], 1, %{foo: %{bar: []}}) end
+    assert_raise ArgumentError, "argument error", fn -> Nested.update!([:unknown], 1, test_map()) end   
+    assert_raise ArgumentError, "argument error", fn -> Nested.update!([:three, :unknown], 1, test_map()) end
+    assert_raise ArgumentError, "argument error", fn -> Nested.update!([:foo, :bar, :buz], 1, %{foo: %{bar: []}}) end
   end
 
 

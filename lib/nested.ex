@@ -53,10 +53,34 @@ defmodule Nested do
   def get(value, [], _) do
     value
   end
+  
+  def fetch(map, [key | pathRest]) do
+    case(Map.get(map,key)) do
+      nil ->
+        :error
+      nestedMap ->
+        fetch(nestedMap, pathRest)
+    end
+  end
 
-  def update(map, path, valueOrFun) do
+  def fetch(value, []) do
+    {:ok, value}
+  end
+
+  def fetch!(map, [key | pathRest]) do
+    case(Map.fetch!(map,key)) do
+      nestedMap ->
+        fetch!(nestedMap, pathRest)
+    end
+  end
+
+  def fetch!(value, []) do
+    value
+  end
+
+  def update(map, path, default, valueOrFun) do
     try do
-      updatef_interal(map, path, valueOrFun)
+      updatef_interal(map, path, default, valueOrFun)
     catch
       :error, {:error, {:no_map, pathRest, element}} ->
         pathLength = length(path) - length(pathRest)
@@ -66,8 +90,8 @@ defmodule Nested do
   end
 
 
-  defp updatef_interal(map, [key | pathRest], valueOrFun) when is_map(map) do
-    Map.put(map,key, updatef_interal(Map.get(map,key), pathRest, valueOrFun))
+  defp updatef_interal(map, [key | pathRest], default, valueOrFun) when is_map(map) do
+    Map.put(map,key, updatef_interal(Map.get(map,key,default), pathRest, valueOrFun))
   end
 
   defp updatef_interal(oldValue, [], fun) when is_function(fun) do
@@ -82,6 +106,33 @@ defmodule Nested do
     :erlang.error({:error, {:no_map, path, element}})
   end
 
+  def update!(map, path, valueOrFun) do
+    try do
+      updatef_interal!(map, path, valueOrFun)
+    catch
+      :error, {:error, {:no_map, pathRest, element}} ->
+        pathLength = length(path) - length(pathRest)
+        pathToThrow = :lists.sublist(path, pathLength)
+        :erlang.error({:no_map, pathToThrow, element})
+    end
+  end
+
+
+  defp updatef_interal!(map, [key | pathRest], valueOrFun) when is_map(map) do
+    Map.put(map,key, updatef_interal!(Map.fetch!(map,key), pathRest, valueOrFun))
+  end
+
+  defp updatef_interal!(oldValue, [], fun) when is_function(fun) do
+    fun.(oldValue)
+  end
+
+  defp updatef_interal!(_, [], value) do
+    value
+  end
+
+  defp updatef_interal!(element, path, _) do
+    :erlang.error({:error, {:no_map, path, element}})
+  end
 
   def put(map, [key | pathRest], value) do
     subMap = case(Map.has_key?(map, key) and is_map(Map.get(map,key))) do
@@ -132,7 +183,7 @@ defmodule Nested do
       _ ->
         :erlang.error(:no_list)
     end
-    update(map, path, appendFun)
+    update!(map, path, appendFun)
   end
 
 end
