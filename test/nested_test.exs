@@ -25,20 +25,25 @@ defmodule NestedTest do
     assert_raise BadMapError, "expected a map, got: :target", fn -> Nested.get(test_map(),[:three, :two, :one, :unknown]) end
   end
 
-  #TODO
   test "fetch_test" do
-    #assert {:ok, test_map()} == Nested.fetch(test_map(), [])
+    assert {:ok, test_map()} == Nested.fetch(test_map(), [])
     assert {:ok, 3} == Nested.fetch(test_map(),[:three_side])
-    #assert {:ok, 2} == Nested.fetch(test_map(), [:three, :two_side])
-    #assert {:ok, %{one: :target, one_side: 1}} == Nested.fetch(test_map(), [:three, :two])
-    #assert {:ok, :target} == Nested.fetch(test_map(), [:three, :two, :one])
+    assert {:ok, 2} == Nested.fetch(test_map(), [:three, :two_side])
+    assert {:ok, %{one: :target, one_side: 1}} == Nested.fetch(test_map(), [:three, :two])
+    assert {:ok, :target} == Nested.fetch(test_map(), [:three, :two, :one])
   end
 
 
   test "fetch_fails_test" do
     assert :error == Nested.fetch(test_map(),[:unknown])
-    #assert :error == Nested.fetch(test_map(),[:three, :unknown])
-    assert_raise BadMapError, "expected a map, got: :target", fn -> Nested.get(test_map(),[:three, :two, :one, :unknown]) end
+    assert :error == Nested.fetch(test_map(),[:three, :unknown])
+    assert_raise BadMapError, "expected a map, got: :target", fn -> Nested.fetch(test_map(),[:three, :two, :one, :unknown]) end
+  end
+  
+  test "fetch!_fails_test" do
+    assert_raise KeyError, Nested.fetch!(test_map(),[:unknown])
+    assert_raise KeyError, Nested.fetch!(test_map(),[:three, :unknown])
+    assert_raise BadMapError, "expected a map, got: :target", fn -> Nested.fetch!(test_map(),[:three, :two, :one, :unknown]) end
   end
 
   test "get_with_default_test" do
