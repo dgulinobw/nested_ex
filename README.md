@@ -1,11 +1,11 @@
 # Nested
 
-Alibrary to handle nested Elixir maps, a reimplementation of the Erlang [nested](https://github.com/odo/nested) library.
+A library to handle nested Elixir maps, a reimplementation of the Erlang [nested](https://github.com/odo/nested) library.
 
-## requirements
+## Requirements
 Elixir 1.13 or newer
 
-## building
+## Building
 
 ```
 git clone git@github.com:dgulinobw/nested_ex.git
@@ -14,9 +14,9 @@ mix
 iex -S mix
 ```
 
-## usage
+## Usage
 
-### get
+### Get
 
 get the value of an existing key:
 
@@ -28,7 +28,7 @@ Nested.get(map,[:two, :one])
 :target
 ```
 
-or use a default in case the key does not exist:
+Or use a default in case the key does not exist:
 
 
 ```elixir
@@ -39,8 +39,8 @@ Nested.get(map,[:two, :some_unknown_key], :default)
 :default
 ```
 
-### put
-put some value under a key that might or might not exist:
+### Put
+Put some value under a key that might or might not exist:
 
 ```elixir
 map = %{two: %{one: :target, one_side: 1}, two_side: 2}
@@ -62,9 +62,9 @@ Nested.put(map, [:two, :down, :the, :rabbit, :hole], 42)
 }
 ```
 
-### update
+### Update
 
-replace an exiting value:
+Replace an exiting value:
 
 ```elixir
 map = %{two: %{one: :target, one_side: 1}, two_side: 2}
@@ -75,7 +75,7 @@ Nested.update!(map, [:two, :one_side], 7)
 ```
 
 ### keys
-list the keys in a sup map:
+List the keys in a sup map:
 
 ```elixir
 map = %{two: %{one: :target, one_side: 1}, two_side: 2}
@@ -85,9 +85,9 @@ Nested.keys(map, [:two])
 [:one, :one_side]
 ```
 
-### delete
+### Delete
 
-delete a key:
+Delete a key:
 
 ```elixir
 map = %{two: %{one: :target, one_side: 1}, two_side: 2}
@@ -97,7 +97,7 @@ Nested.delete(map, [:two, :one_side])
 %{two: %{one: :target}, two_side: 2}
 ```
 
-if the path does not exist, nothing changes:
+If the path does not exist, nothing changes:
 
 ```elixir
 map = %{two: %{one: :target, one_side: 1}, two_side: 2}
@@ -107,7 +107,7 @@ Nested.delete(map, [:two, :unknown, :path])
 #{two => #{one => target,one_side => 1},two_side => 2}
 ```
 
-instead of a value, you can pass a function with arity 1 which is passed the old value:
+Instead of a value, you can pass a function with arity 1 which is passed the old value:
 
 ```elixir
 Nested.update!(map, [:two_side], fn(e) -> e*2 end)
