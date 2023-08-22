@@ -45,6 +45,8 @@ put some value under a key that might or might not exist:
 ```elixir
 map = %{two: %{one: :target, one_side: 1}, two_side: 2}
 Nested.put(map, [:two, :one], :i_got_you)
+```
+```elixir
 #{two => #{one => i_got_you,one_side => 1},two_side => 2}
 ```
 
@@ -52,6 +54,8 @@ If there are more keys than in the original map, nested maps are created:
 
 ```elixir
 Nested.put(map, [:two, :down, :the, :rabbit, :hole], 42)
+```
+```elixir
 #{two => #{down => #{the => #{rabbit => #{hole => 42}}},one => target,one_side => 1},
   two_side => 2}
 ```
@@ -63,6 +67,8 @@ replace an exiting value:
 ```elixir
 map = %{two: %{one: :target, one_side: 1}, two_side: 2}
 Nested.update(map, [:two, :one_side], 7)
+```
+```elixir
 #{two => #{one => target,one_side => 7},two_side => 2}
 ```
 
@@ -72,6 +78,8 @@ list the keys in a sup map:
 ```elixir
 map = %{two: %{one: :target, one_side: 1}, two_side: 2}
 Nested.keys(map, [:two])
+```
+```elixir
 [one,one_side]
 ```
 
