@@ -74,7 +74,7 @@ Nested.update!(map, [:two, :one_side], 7)
 %{two: %{one: :target, one_side: 7}, two_side: 2}
 ```
 
-### keys
+### Keys
 List the keys in a sup map:
 
 ```elixir
@@ -128,6 +128,6 @@ Nested.update!(map, [:two_side], fn(_) -> fn(a, b) -> {a, b} end end)
 }
 ```
 
-# TODO:
+# TODO
 
 Add the ability to pass functions to functions other than update!.
