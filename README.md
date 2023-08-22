@@ -130,13 +130,13 @@ Nested.remove(map, [:two, :unknown, :path])
 you can use these variants to get a function with the path in the context:
 
 ```elixir
-map = #{two => #{one => target, one_side => 1}, two_side => 2}.
+map = #{two => #{one => target, one_side => 1}, two_side => 2}
 ```
 ```elixir
-TwoOneSelector = Nested.getf([:two, :one]).
+TwoOneSelector = Nested.getf([:two, :one])
 ```
 ```elixir
-#Fun<nested.0.895889(3)>
+#Fun<nested.0.895889
 ```
 ```elixir
 TwoOneSelector(map).
@@ -145,13 +145,13 @@ TwoOneSelector(map).
 target
 ```
 ```elixir
-TwoOneUpdater = Nested.updatef([:two, :one]).
+TwoOneUpdater = Nested.updatef([:two, :one])
 ```
 ```elixir
-#Fun<nested.1.895889(3)>
+#Fun<nested.1.895889
 ```
 ```elixir
-TwoOneUpdater(map, :new_value).
+TwoOneUpdater(map, :new_value)
 ```
 ```elixir
 #{two => #{one => new_value,one_side => 1},two_side => 2}
