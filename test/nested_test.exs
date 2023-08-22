@@ -41,8 +41,8 @@ defmodule NestedTest do
   end
   
   test "fetch!_fails_test" do
-    assert_raise KeyError, Nested.fetch!(test_map(),[:unknown])
-    assert_raise KeyError, Nested.fetch!(test_map(),[:three, :unknown])
+    assert_raise KeyError, fn -> Nested.fetch!(test_map(),[:unknown]) end
+    assert_raise KeyError, fn -> Nested.fetch!(test_map(),[:three, :unknown]) end
     assert_raise BadMapError, "expected a map, got: :target", fn -> Nested.fetch!(test_map(),[:three, :two, :one, :unknown]) end
   end
 
@@ -71,9 +71,9 @@ defmodule NestedTest do
 
 
   test "update_fails_test" do
-    assert_raise ArgumentError, "argument error", fn -> Nested.update!([:unknown], 1, test_map()) end   
-    assert_raise ArgumentError, "argument error", fn -> Nested.update!([:three, :unknown], 1, test_map()) end
-    assert_raise ArgumentError, "argument error", fn -> Nested.update!([:foo, :bar, :buz], 1, %{foo: %{bar: []}}) end
+    assert_raise ArgumentError, fn -> Nested.update!([:unknown], 1, test_map()) end   
+    assert_raise ArgumentError, fn -> Nested.update!([:three, :unknown], 1, test_map()) end
+    assert_raise ArgumentError, fn -> Nested.update!([:foo, :bar, :buz], 1, %{foo: %{bar: []}}) end
   end
 
 

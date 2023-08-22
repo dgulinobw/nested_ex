@@ -128,6 +128,11 @@ Nested.delete(map, [:two, :unknown, :path])
 #{two => #{one => target,one_side => 1},two_side => 2}
 ```
 
+# TEST
+```elixir
+mix test
+```
+
 # TODO
 
 Add the ability to pass functions to functions other than update!.
