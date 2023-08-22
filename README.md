@@ -96,7 +96,7 @@ Nested.update!(map, [:two_side], fn(_) -> fn(a, b) -> {a, b} end end)
 ```
 
 ### Keys
-List the keys in a sup map:
+List the keys in a map:
 
 ```elixir
 map = %{two: %{one: :target, one_side: 1}, two_side: 2}
