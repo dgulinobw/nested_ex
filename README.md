@@ -137,6 +137,7 @@ TwoOneSelector = Nested.getf([:two, :one]).
 ```
 ```elixir
 #Fun<nested.0.895889(3)>
+```
 ```elixir
 TwoOneSelector(map).
 ```
