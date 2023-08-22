@@ -96,7 +96,6 @@ Nested.remove(map, [:two, :one_side])
 #{two => #{one => target},two_side => 2}
 ```
 
-
 instead of a value, you can pass a function with arity 1 which is passed the old value:
 
 ```elixir
@@ -143,11 +142,13 @@ TwoOneSelector(map).
 ```
 ```elixir
 target
+```
 ```elixir
 TwoOneUpdater = Nested.updatef([:two, :one]).
 ```
 ```elixir
 #Fun<nested.1.895889(3)>
+```
 ```elixir
 TwoOneUpdater(map, :new_value).
 ```
