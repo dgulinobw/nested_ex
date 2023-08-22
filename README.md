@@ -74,6 +74,27 @@ Nested.update!(map, [:two, :one_side], 7)
 %{two: %{one: :target, one_side: 7}, two_side: 2}
 ```
 
+Instead of a value, you can pass a function with arity 1 which is passed the old value:
+
+```elixir
+Nested.update!(map, [:two_side], fn(e) -> e*2 end)
+```
+```elixir
+%{two: %{one: :target, one_side: 1}, two_side: 4}
+```
+
+If you really mean to set the value to a fun you have to wrap it in an update fun:
+
+```elixir
+Nested.update!(map, [:two_side], fn(_) -> fn(a, b) -> {a, b} end end)
+```
+```elixir
+%{
+  two: %{one: :target, one_side: 1},
+  two_side: #Function<41.125776118/2 in :erl_eval.expr/6>
+}
+```
+
 ### Keys
 List the keys in a sup map:
 
@@ -105,27 +126,6 @@ Nested.delete(map, [:two, :unknown, :path])
 ```
 ```elixir
 #{two => #{one => target,one_side => 1},two_side => 2}
-```
-
-Instead of a value, you can pass a function with arity 1 which is passed the old value:
-
-```elixir
-Nested.update!(map, [:two_side], fn(e) -> e*2 end)
-```
-```elixir
-%{two: %{one: :target, one_side: 1}, two_side: 4}
-```
-
-If you really mean to set the value to a fun you have to wrap it in an update fun:
-
-```elixir
-Nested.update!(map, [:two_side], fn(_) -> fn(a, b) -> {a, b} end end)
-```
-```elixir
-%{
-  two: %{one: :target, one_side: 1},
-  two_side: #Function<41.125776118/2 in :erl_eval.expr/6>
-}
 ```
 
 # TODO
