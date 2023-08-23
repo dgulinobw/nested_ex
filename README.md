@@ -1,6 +1,22 @@
 # Nested
 
-A library to handle nested Elixir maps, a reimplementation of the Erlang [nested](https://github.com/odo/nested) library.
+A library to handle nested Elixir maps, based on the Erlang [nested](https://github.com/odo/nested) library.
+
+```elixir
+map = %{one: %{two: %{three: 4}}}
+
+# This:
+map
+|> Nested.get(map,[:one, :two, :three])
+4
+
+# Instead of this:
+map
+|> Map.get(:one)
+|> Map.get(:two)
+|> Map.get(:three)
+4
+```
 
 ## Requirements
 Elixir 1.13 or newer
