@@ -7,7 +7,7 @@ map = %{one: %{two: %{three: 4}}}
 
 # This:
 map
-|> Nested.get(map,[:one, :two, :three])
+|> Nested.get([:one, :two, :three])
 4
 
 # Instead of this:
