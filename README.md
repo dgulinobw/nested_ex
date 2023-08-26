@@ -35,7 +35,6 @@ iex -S mix
 ### Get
 
 get the value of an existing key:
-
 ```elixir
 map = %{two: %{one: :target, one_side: 1}, two_side: 2}
 Nested.get(map,[:two, :one])
@@ -44,7 +43,6 @@ Nested.get(map,[:two, :one])
 ```
 
 Or use a default in case the key does not exist:
-
 
 ```elixir
 map = %{two: %{one: :target, one_side: 1}, two_side: 2}
@@ -102,6 +100,28 @@ Nested.update!(map, [:two_side], fn(_) -> fn(a, b) -> {a, b} end end)
   two: %{one: :target, one_side: 1},
   two_side: #Function<41.125776118/2 in :erl_eval.expr/6>
 }
+```
+
+### Append
+
+append/3
+```elixir 
+Nested.append(%{"test" => "rest", "rest" => [1]},["rest"],2)
+
+%{"rest" => [1, 2], "test" => "rest"}
+```
+
+append/4
+If key not found, add key and append value to default List provided
+  Similar to Python's defaultdict
+```elixir
+Nested.append(%{"test" => "rest", "rest" => [1]},["xest"],2,[])
+
+%{"rest" => [1], "test" => "rest", "xest" => [2]}
+
+Nested.append(%{"test" => "rest", "rest" => [1]},["rest"],2,[])
+
+%{"rest" => [1, 2], "test" => "rest"}
 ```
 
 ### Keys

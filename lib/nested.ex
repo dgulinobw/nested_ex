@@ -18,6 +18,34 @@ defmodule Nested do
     update!(map, path, appendFun)
   end
 
+  @doc """
+  If key not found, add key and append value to default List provided
+  Similar to Python's defaultdict
+
+  > Nested.append(%{"test" => "rest", "rest" => [1]},["xest"],2,[])
+
+  %{"rest" => [1], "test" => "rest", "xest" => [2]}
+
+  > Nested.append(%{"test" => "rest", "rest" => [1]},["rest"],2,[])
+
+  %{"rest" => [1, 2], "test" => "rest"}
+  """
+  @spec append(map :: Any, path :: [Any], value :: Any, default :: List) :: Map
+  def append(map, path, value, default) do
+    appendFun = fn
+      list when is_list(list) ->
+        list ++ [value]
+      _ ->
+        default ++ [value]
+    end
+    case has_key?(map,path) do
+      true ->
+        update!(map, path, appendFun)
+      false ->
+        put(map, path, default ++ [value])
+    end
+  end
+  
   def delete(map, []) do
     map
   end
