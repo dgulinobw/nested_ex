@@ -2,7 +2,7 @@ defmodule Nested.MixProject do
   use Mix.Project
 
   @name "nested_ex"
-  @version "0.1.0"
+  @version "0.1.1"
   @repo_url "https://github.com/dgulinobw/nested_ex"
 
   def project do
