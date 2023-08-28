@@ -183,7 +183,14 @@ defmodule Nested do
 
   @spec update!(map(), [any()], any()) :: map()
   def update!(map, path, valueOrFun) do
-    updatef_internal!(map, path, valueOrFun)
+    try do
+     updatef_internal!(map, path, valueOrFun)
+    catch
+      :error, {:error, {:no_map, pathRest, element}} ->
+        pathLength = length(path) - length(pathRest)
+        pathToThrow = :lists.sublist(path, pathLength)
+        :erlang.error({:no_map, pathToThrow, element})
+    end
   end
 
   @spec updatef_internal!(map :: map(), [any()], function() | term()) :: map()
