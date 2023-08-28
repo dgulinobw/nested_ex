@@ -124,6 +124,21 @@ If key not found, add key and append value to default List provided
     %{"rest" => [1, 2], "test" => "rest"}
 ```
 
+```elixir
+    iex> accum = %{}
+    %{}
+    iex> accum = Nested.append(accum,["test"],Enum.random(0..10),[])
+    %{"test" => [5]}
+    iex> accum = Nested.append(accum,["test"],Enum.random(0..10),[])
+    %{"test" => [5, 2]}
+    iex> accum = Nested.append(accum,["test"],Enum.random(0..10),[])
+    %{"test" => [5, 2, 8]}
+    iex> accum = Nested.append(accum,["test"],Enum.random(0..10),[])
+    %{"test" => [5, 2, 8, 3]}
+    iex> accum = Nested.append(accum,["test"],Enum.random(0..10),[])
+    %{"test" => [5, 2, 8, 3, 4]}
+```
+
 ### Keys
 List the keys in a map:
 
