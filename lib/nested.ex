@@ -8,6 +8,13 @@ defmodule Nested do
   Elixir reimplementation of Erlang library [nested](https://github.com/odo/nested)
   """
 
+  @doc ~S"""
+  Appends value to List at key path.
+
+    iex> Nested.append(%{"test" => "rest", "rest" => [1]},["rest"],2)
+    %{"rest" => [1, 2], "test" => "rest"}
+  """
+  @spec append(map :: map(), path :: [any()], value :: any()) :: map()
   def append(map, path, value) do
     appendFun = fn
       list when is_list(list) ->
@@ -18,19 +25,18 @@ defmodule Nested do
     update!(map, path, appendFun)
   end
 
-  @doc """
-  If key not found, add key and append value to default List provided
+  @doc ~S"""
+  Appends value to List at key path.
+  If key not found at path, add key and append value to default List provided
   Similar to Python's defaultdict
 
-  > Nested.append(%{"test" => "rest", "rest" => [1]},["xest"],2,[])
+    iex> Nested.append(%{"test" => "rest", "rest" => [1]},["xest"],2,[])
+    %{"rest" => [1], "test" => "rest", "xest" => [2]}
 
-  %{"rest" => [1], "test" => "rest", "xest" => [2]}
-
-  > Nested.append(%{"test" => "rest", "rest" => [1]},["rest"],2,[])
-
-  %{"rest" => [1, 2], "test" => "rest"}
+    iex> Nested.append(%{"test" => "rest", "rest" => [1]},["rest"],2,[])
+    %{"rest" => [1, 2], "test" => "rest"}
   """
-  @spec append(map :: Any, path :: [Any], value :: Any, default :: List) :: Map
+  @spec append(map(), [any()], any(), list()) :: map()
   def append(map, path, value, default) do
     appendFun = fn
       list when is_list(list) ->
@@ -46,14 +52,17 @@ defmodule Nested do
     end
   end
   
+  @spec delete(map :: map(), list()) :: map()
   def delete(map, []) do
     map
   end
 
+  @spec delete(map :: map(), list()) :: map()
   def delete(map, [lastKey]) do
     Map.delete(map,lastKey)
   end
 
+  @spec delete(map :: map(), list()) :: map()
   def delete(map, [key | pathRest]) do
     case(Map.has_key?(map,key)) do
       true ->
@@ -63,6 +72,7 @@ defmodule Nested do
     end
   end
 
+  @spec fetch!(map :: map(), [any()]) :: {:ok, map()}
   def fetch!(map, path) do
     case get(map, path) do
       :nil ->
@@ -72,6 +82,7 @@ defmodule Nested do
     end
   end
 
+  @spec fetch(map :: map(), [any()]) :: {:ok, map()}
   def fetch(map, path) do
     case get(map, path) do
       :nil ->
@@ -81,11 +92,14 @@ defmodule Nested do
     end
   end
   
-  @doc """
+  @doc ~S"""
 
   ## Examples
 
       iex> Nested.get(%{test: :rest}, [:test] )
+      :rest
+
+      iex> %{test: :rest} |> Nested.get([:test])
       :rest
 
       iex> Nested.get(%{}, [:a])
@@ -101,15 +115,17 @@ defmodule Nested do
       3
   """
   
+  @spec get(map :: map(), [any()]) :: any()
   def get(map,[key | pathRest]) do
     get(Map.get(map, key), pathRest)
   end
 
+  @spec get(map :: map(), []) :: any()
   def get(value, []) do
     value
   end
 
-
+  @spec get(map :: map(), [any()], any()) :: any()
   def get(map, [key | pathRest], default) do
     case(Map.get(map,key,{__MODULE__, default})) do
       {__MODULE__, ^default} ->
@@ -119,14 +135,17 @@ defmodule Nested do
     end
   end
 
+  @spec get(map :: map(), [], any()) :: any()
   def get(value, [], _) do
     value
   end
 
+  @spec has_key?(map :: map(), list()) :: boolean()
   def has_key?(map, [key]) do
     Map.has_key?(map, key)
   end
 
+  @spec has_key?(map :: map(), list()) :: boolean()
   def has_key?(map,[key | pathRest]) do
     case(map) do
       %{^key => subMap} ->
@@ -136,14 +155,17 @@ defmodule Nested do
     end
   end
 
+  @spec keys(map :: map(), [any()]) :: [any()] 
   def keys(map, [key | pathRest]) do
     keys(Map.get(map,key), pathRest)
   end
 
+  @spec keys(map :: map(), []) :: [any()]
   def keys(map, []) do
     Map.keys(map)
   end
-  
+
+  @spec put(map :: map(), [any()], any()) :: map()
   def put(map, [key | pathRest], value) do
     subMap = case(Map.has_key?(map, key) and is_map(Map.get(map,key))) do
       true ->
@@ -154,40 +176,40 @@ defmodule Nested do
     Map.put(map, key, put(subMap, pathRest, value) )
   end
 
+  @spec put(map :: map(), [], any()) :: map()
   def put(_, [], value) do
     value
   end
 
+  @spec update!(map(), [any()], any()) :: map()
   def update!(map, path, valueOrFun) do
-    try do
-      updatef_interal!(map, path, valueOrFun)
-    catch
-      :error, {:error, {:no_map, pathRest, element}} ->
-        pathLength = length(path) - length(pathRest)
-        pathToThrow = :lists.sublist(path, pathLength)
-        :erlang.error({:no_map, pathToThrow, element})
-    end
+    updatef_internal!(map, path, valueOrFun)
   end
 
-  defp updatef_interal!(map, [key | pathRest], valueOrFun) when is_map(map) do
-    Map.put(map,key, updatef_interal!(Map.fetch!(map,key), pathRest, valueOrFun))
+  @spec updatef_internal!(map :: map(), [any()], function() | term()) :: map()
+  defp updatef_internal!(map, [key | pathRest], valueOrFun) when is_map(map) do
+    Map.put(map,key, updatef_internal!(Map.fetch!(map,key), pathRest, valueOrFun))
   end
 
-  defp updatef_interal!(oldValue, [], fun) when is_function(fun) do
+  @spec updatef_internal!(map :: map(), [], function() ) :: map()
+  defp updatef_internal!(oldValue, [], fun) when is_function(fun) do
     fun.(oldValue)
   end
 
-  defp updatef_interal!(_, [], value) do
+  @spec updatef_internal!(any(), [], any() ) :: map()
+  defp updatef_internal!(_, [], value) do
     value
   end
 
-  defp updatef_interal!(element, path, _) do
+  @spec updatef_internal!(any(), [any()], any() ) :: map()
+  defp updatef_internal!(element, path, _) do
     :erlang.error({:error, {:no_map, path, element}})
   end
   
+  @spec update(map :: map(), path :: [any()], default :: any(), any() ) :: map()
   def update(map, path, default, valueOrFun) do
     try do
-      updatef_interal(map, path, default, valueOrFun)
+      updatef_internal(map, path, default, valueOrFun)
     catch
       :error, {:error, {:no_map, pathRest, element}} ->
         pathLength = length(path) - length(pathRest)
@@ -196,20 +218,23 @@ defmodule Nested do
     end
   end
 
-
-  defp updatef_interal(map, [key | pathRest], default, valueOrFun) when is_map(map) do
-    Map.put(map,key, updatef_interal(Map.get(map,key,default), pathRest, valueOrFun))
+  @spec updatef_internal(map :: map(), path :: [any()], default :: any(), any() ) :: map()
+  defp updatef_internal(map, [key | pathRest], default, valueOrFun) when is_map(map) do
+    Map.put(map,key, updatef_internal(Map.get(map,key,default), pathRest, valueOrFun))
   end
 
-  defp updatef_interal(oldValue, [], fun) when is_function(fun) do
+  @spec updatef_internal(map :: map(), path :: [], default :: any(), function() ) :: map()
+  defp updatef_internal(oldValue, [], fun) when is_function(fun) do
     fun.(oldValue)
   end
 
-  defp updatef_interal(_, [], value) do
+  @spec updatef_internal(any(), [], any() ) :: map()
+  defp updatef_internal(_, [], value) do
     value
   end
 
-  defp updatef_interal(element, path, _) do
+  @spec updatef_internal(any(), [any()], any() ) :: map()
+  defp updatef_internal(element, path, _) do
     :erlang.error({:error, {:no_map, path, element}})
   end
 

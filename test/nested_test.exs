@@ -1,5 +1,5 @@
 defmodule NestedTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
   doctest Nested
 
   test "Nested.has_key?_test" do
